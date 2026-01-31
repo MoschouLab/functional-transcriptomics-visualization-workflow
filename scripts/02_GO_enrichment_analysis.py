@@ -180,144 +180,103 @@ for ont_key in GO_CATEGORIES.keys():
 print()
 
 ################################################################################
-# Create Publication-Ready Bubble Plots
+# Create Publication-Ready Bubble Plots (Separate for UP and DOWN)
 ################################################################################
 
 print("Step 5: Creating publication-ready bubble plots...")
 
-def create_bubble_plot(ont_key):
+def create_single_bubble_plot(ont_key, direction):
     """
-    Create combined bubble plot for UP and DOWN regulated genes
+    Create individual bubble plot for UP or DOWN regulated genes
     """
-    # Collect data
-    plot_data = []
-    
-    for direction in ['UP', 'DOWN']:
-        if direction in enrichment_results[ont_key] and len(enrichment_results[ont_key][direction]) > 0:
-            df = enrichment_results[ont_key][direction].copy()
-            
-            # Calculate fold enrichment
-            df['fold_enrichment'] = (df['intersection_size'] / df['query_size']) / \
-                                    (df['term_size'] / df['effective_domain_size'])
-            
-            df['neg_log10_fdr'] = -np.log10(df['p_value'])
-            df['direction'] = direction
-            
-            # Select top terms by p-value
-            df_top = df.nsmallest(TOP_N_TERMS, 'p_value')
-            plot_data.append(df_top)
-    
-    if not plot_data:
-        print(f"  No data for {GO_NAMES[ont_key]}")
+    # Check if we have data
+    if direction not in enrichment_results[ont_key] or len(enrichment_results[ont_key][direction]) == 0:
+        print(f"    No enrichment for {direction}")
         return None
     
-    # Combine data
-    combined_df = pd.concat(plot_data, ignore_index=True)
+    # Get data
+    df = enrichment_results[ont_key][direction].copy()
+    
+    # Calculate fold enrichment
+    df['fold_enrichment'] = (df['intersection_size'] / df['query_size']) / \
+                            (df['term_size'] / df['effective_domain_size'])
+    
+    df['neg_log10_fdr'] = -np.log10(df['p_value'])
+    
+    # Select top terms by p-value
+    df_plot = df.nsmallest(TOP_N_TERMS, 'p_value').copy()
     
     # Truncate long term names
-    combined_df['name_short'] = combined_df['name'].apply(
-        lambda x: x[:65] + '...' if len(x) > 65 else x
+    df_plot['name_short'] = df_plot['name'].apply(
+        lambda x: x[:70] + '...' if len(x) > 70 else x
     )
     
     # Sort by fold enrichment for better visualization
-    term_order_up = []
-    term_order_down = []
+    df_plot = df_plot.sort_values('fold_enrichment')
     
-    if 'UP' in combined_df['direction'].values:
-        df_up = combined_df[combined_df['direction'] == 'UP']
-        term_order_up = df_up.nsmallest(TOP_N_TERMS, 'p_value')['name_short'].tolist()
+    # Determine appropriate x-axis limits
+    max_fe = df_plot['fold_enrichment'].max()
+    min_fe = df_plot['fold_enrichment'].min()
     
-    if 'DOWN' in combined_df['direction'].values:
-        df_down = combined_df[combined_df['direction'] == 'DOWN']
-        term_order_down = df_down.nsmallest(TOP_N_TERMS, 'p_value')['name_short'].tolist()
+    # Use log scale if fold enrichment range is very large
+    use_log_scale = (max_fe / min_fe) > 50
     
-    # Create figure with subplots
-    fig, axes = plt.subplots(1, 2, figsize=(18, 10))
+    # Create figure
+    fig, ax = plt.subplots(figsize=(12, 10))
     
-    for idx, direction in enumerate(['UP', 'DOWN']):
-        ax = axes[idx]
-        
-        if direction not in combined_df['direction'].values:
-            ax.text(0.5, 0.5, 'No enrichment', ha='center', va='center', 
-                   fontsize=14, transform=ax.transAxes)
-            ax.set_title(f'{direction}-regulated', fontsize=13, fontweight='bold')
-            continue
-        
-        df_plot = combined_df[combined_df['direction'] == direction].copy()
-        term_order = term_order_up if direction == 'UP' else term_order_down
-        
-        # Filter to keep only terms in order
-        df_plot = df_plot[df_plot['name_short'].isin(term_order)]
-        df_plot['name_short'] = pd.Categorical(
-            df_plot['name_short'], 
-            categories=list(reversed(term_order)), 
-            ordered=True
-        )
-        df_plot = df_plot.sort_values('name_short')
-        
-        # Determine appropriate x-axis limits
-        max_fe = df_plot['fold_enrichment'].max()
-        
-        # Use log scale if fold enrichment range is very large
-        use_log_scale = (max_fe / df_plot['fold_enrichment'].min()) > 50
-        
-        # Create scatter plot
-        scatter = ax.scatter(
-            x=df_plot['fold_enrichment'],
-            y=df_plot['name_short'],
-            s=df_plot['intersection_size'] * 10,  # Reduced from 20
-            c=df_plot['neg_log10_fdr'],
-            alpha=0.7,
-            cmap='Reds' if direction == 'UP' else 'Blues',
-            edgecolors='black',
-            linewidth=0.8,
-            vmin=2,  # Minimum significance
-            vmax=combined_df['neg_log10_fdr'].max()
-        )
-        
-        # Set x-scale
-        if use_log_scale:
-            ax.set_xscale('log')
-            ax.set_xlabel('Fold Enrichment (log scale)', fontsize=12, fontweight='bold')
-        else:
-            ax.set_xlabel('Fold Enrichment', fontsize=12, fontweight='bold')
-            # Set reasonable xlim
-            ax.set_xlim(left=0, right=max_fe * 1.1)
-        
-        # Vertical reference line at fold enrichment = 1
-        if not use_log_scale:
-            ax.axvline(x=1, color='gray', linestyle='--', linewidth=1, alpha=0.5)
-        
-        # Labels and title
-        ax.set_ylabel('GO Term', fontsize=12, fontweight='bold')
-        ax.set_title(f'{direction}-regulated Genes', fontsize=13, fontweight='bold')
-        
-        # Grid
-        ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5, axis='x')
-        ax.set_axisbelow(True)
-        
-        # Tick parameters
-        ax.tick_params(axis='both', labelsize=10)
+    # Create scatter plot
+    scatter = ax.scatter(
+        x=df_plot['fold_enrichment'],
+        y=df_plot['name_short'],
+        s=df_plot['intersection_size'] * 10,
+        c=df_plot['neg_log10_fdr'],
+        alpha=0.7,
+        cmap='Reds' if direction == 'UP' else 'Blues',
+        edgecolors='black',
+        linewidth=0.8,
+        vmin=2,
+        vmax=df_plot['neg_log10_fdr'].max()
+    )
     
-    # Add main title
-    fig.suptitle(f'GO {GO_NAMES[ont_key]} Enrichment', 
-                 fontsize=15, fontweight='bold', y=0.98)
+    # Set x-scale
+    if use_log_scale:
+        ax.set_xscale('log')
+        ax.set_xlabel('Fold Enrichment (log scale)', fontsize=12, fontweight='bold')
+    else:
+        ax.set_xlabel('Fold Enrichment', fontsize=12, fontweight='bold')
+        ax.set_xlim(left=0, right=max_fe * 1.1)
     
-    # Create colorbar
-    cbar = fig.colorbar(scatter, ax=axes, pad=0.01, aspect=40)
+    # Vertical reference line at fold enrichment = 1
+    if not use_log_scale:
+        ax.axvline(x=1, color='gray', linestyle='--', linewidth=1, alpha=0.5)
+    
+    # Labels and title
+    ax.set_ylabel('GO Term', fontsize=12, fontweight='bold')
+    ax.set_title(f'{GO_NAMES[ont_key]} - {direction}-regulated Genes', 
+                 fontsize=14, fontweight='bold', pad=15)
+    
+    # Grid
+    ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5, axis='x')
+    ax.set_axisbelow(True)
+    
+    # Tick parameters
+    ax.tick_params(axis='both', labelsize=10)
+    
+    # Colorbar
+    cbar = plt.colorbar(scatter, ax=ax, pad=0.02)
     cbar.set_label('-log10(FDR)', fontsize=11, fontweight='bold')
     cbar.ax.tick_params(labelsize=10)
     
-    # Create size legend with SMALLER bubbles
+    # Size legend
     from matplotlib.lines import Line2D
-    legend_sizes = [10, 30, 50]  # Reduced from [10, 50, 100]
+    legend_sizes = [10, 30, 50]
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', 
                markerfacecolor='gray', markersize=np.sqrt(s*10/np.pi), 
                alpha=0.7, markeredgecolor='black', markeredgewidth=0.8)
         for s in legend_sizes
     ]
-    legend = axes[1].legend(
+    legend = ax.legend(
         legend_elements, 
         [str(s) for s in legend_sizes],
         title='Gene Count', 
@@ -335,17 +294,18 @@ def create_bubble_plot(ont_key):
     
     return fig
 
-# Generate plots
+# Generate plots - separate files for UP and DOWN
 for ont_key in GO_CATEGORIES.keys():
-    print(f"  Creating plot for {GO_NAMES[ont_key]}...")
+    print(f"  Creating plots for {GO_NAMES[ont_key]}...")
     
-    fig = create_bubble_plot(ont_key)
-    
-    if fig is not None:
-        output_file = RESULTS_FIGURES / f"panel_B_{ont_key}_bubble_plot.pdf"
-        fig.savefig(output_file, dpi=300, bbox_inches='tight')
-        plt.close(fig)
-        print(f"    Saved: {output_file.name}")
+    for direction in ['UP', 'DOWN']:
+        fig = create_single_bubble_plot(ont_key, direction)
+        
+        if fig is not None:
+            output_file = RESULTS_FIGURES / f"panel_B_{ont_key}_{direction.lower()}_bubble.pdf"
+            fig.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.close(fig)
+            print(f"    Saved: {output_file.name}")
 
 print()
 
@@ -387,7 +347,7 @@ print("="*75)
 print()
 print("Files created:")
 print(f"  - 3 Excel files with enrichment results (results/tables/)")
-print(f"  - 3 bubble plot PDFs - one per GO category (results/figures/)")
+print(f"  - 6 bubble plot PDFs - UP and DOWN for each GO category (results/figures/)")
 print()
 print("Next step: Run script 03_KEGG_pathway_analysis.py")
 print()
