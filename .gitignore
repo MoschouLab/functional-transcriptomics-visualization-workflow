@@ -1,0 +1,55 @@
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Data files (raw data is tracked, but large processed files may not be)
+*.fastq
+*.fastq.gz
+*.bam
+*.sam
+data/processed/*.large
+
+# Logs
+logs/*.log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+*~
+.directory
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Output files that can be regenerated
+results/figures/*.png
+results/figures/*.pdf
+!results/figures/.gitkeep
+results/tables/*.xlsx
+results/tables/*.csv
+!results/tables/.gitkeep
+
+# Large intermediate files
+*.rds
+*.RData
+*.rda

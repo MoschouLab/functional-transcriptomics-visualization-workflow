@@ -1,0 +1,52 @@
+name: tobacco-rnaseq
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Python essentials
+  - python=3.10
+  - pip
+  - numpy
+  - pandas
+  - openpyxl
+  - xlrd
+  
+  # R and essentials
+  - r-base=4.3
+  - r-essentials
+  - r-devtools
+  - r-biocmanager
+  
+  # R data manipulation
+  - r-tidyverse
+  - r-dplyr
+  - r-readr
+  - r-readxl
+  - r-writexl
+  - r-data.table
+  
+  # R visualization
+  - r-ggplot2
+  - r-ggrepel
+  - r-ggpubr
+  - r-cowplot
+  - r-patchwork
+  - r-viridis
+  - r-rcolorbrewer
+  - r-scales
+  - r-pheatmap
+  
+  # Bioconductor core
+  - bioconductor-biocinstaller
+  
+  # Additional tools
+  - r-openxlsx
+  - r-here
+  
+  # pip packages
+  - pip:
+    - matplotlib
+    - seaborn
+    - scipy
+    - scikit-learn
