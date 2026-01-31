@@ -1,0 +1,36 @@
+name: CI - RNA-seq Analysis Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-environment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        environment-file: environment.yml
+        activate-environment: tobacco-rnaseq
+        auto-activate-base: false
+    
+    - name: Verify environment
+      shell: bash -l {0}
+      run: |
+        conda info
+        conda list
+    
+    - name: Check file structure
+      run: |
+        test -f README.md
+        test -f environment.yml
+        test -f requirements.txt
+        test -d data/raw
+        test -d scripts
+        test -d results/figures
+        echo "✓ File structure validated"
