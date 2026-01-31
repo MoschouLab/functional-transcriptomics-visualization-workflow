@@ -1,0 +1,37 @@
+================================================================================
+NICOTIANA TABACUM RNA-SEQ ANALYSIS - SUMMARY STATISTICS
+Comparison: Day 10 vs Day 1
+Generated: 2026-01-31 15:14:45 
+================================================================================
+
+OVERALL DATASET:
+  Total DEGs: 1389
+  UP-regulated (log2FC > 0): 675 (48.6%)
+  DOWN-regulated (log2FC < 0): 714 (51.4%)
+
+log2FC Statistics:
+  Range: -8.077 to 9.291
+  Mean: -0.077
+  Median: -4.031
+  Minimum |log2FC|: 4.000
+
+NOTE: Dataset is pre-filtered - all genes have |log2FC| >= 4.0
+      This represents very strong differential expression
+
+--------------------------------------------------------------------------------
+FILTERED DATASETS BY |log2FC| THRESHOLD:
+(Thresholds adjusted to 4.0, 5.0, 6.0 based on data distribution)
+--------------------------------------------------------------------------------
+
+  threshold total_genes up_regulated down_regulated pct_up pct_down
+        All        1389          675            714   48.6     51.4
+4       >=4        1389          675            714   48.6     51.4
+5       >=5         498          257            241   51.6     48.4
+6       >=6         167           96             71   57.5     42.5
+
+================================================================================
+ANNOTATION COVERAGE:
+================================================================================
+Genes with Arabidopsis orthologs (At_accession): 1138 / 1389 (81.9%)
+
+================================================================================

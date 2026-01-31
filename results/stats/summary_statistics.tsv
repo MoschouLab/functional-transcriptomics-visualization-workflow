@@ -1,0 +1,5 @@
+threshold	total_genes	up_regulated	down_regulated	pct_up	pct_down
+All	1389	675	714	48.6	51.4
+>=4	1389	675	714	48.6	51.4
+>=5	498	257	241	51.6	48.4
+>=6	167	96	71	57.5	42.5
