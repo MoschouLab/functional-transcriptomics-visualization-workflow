@@ -105,6 +105,14 @@
 - Emphasis on biological process interpretation
 - Network analysis for functional relationships
 
+### Ortholog Mapping Strategy
+- **Species analyzed**: *Nicotiana tabacum*
+- **Annotation database used**: *Arabidopsis thaliana* (org.At.tair.db)
+- **Rationale**: No comprehensive org.Nt.xxx.db exists in Bioconductor
+- **Ortholog column**: "At_accesn" (TAIR IDs)
+- **Verification**: `BiocManager::available("org.Nt")` returns `character(0)`
+- **Standard practice**: Widely used for non-model plant species
+
 ---
 
 ## Issues and Solutions

@@ -32,6 +32,20 @@ tobacco-rnaseq-day10-vs-day1/
   - 714 DOWN-regulated (log2FC < 0)
 - **Significance**: FDR-adjusted p-value < 0.05
 
+## Methodological Note: Use of Arabidopsis Orthologs
+
+**Important**: *Nicotiana tabacum* lacks comprehensive GO/KEGG annotation databases in Bioconductor. Following standard practice in plant transcriptomics, this analysis uses **Arabidopsis thaliana orthologs** for functional enrichment analysis.
+
+- **Ortholog mapping**: Pre-computed by RNA-seq pipeline (column "At_accesn" in input data)
+- **Annotation source**: TAIR10 (The Arabidopsis Information Resource)
+- **Justification**: 
+  - *Arabidopsis* has the most complete plant functional annotation
+  - High conservation of core biological processes across angiosperms
+  - Bioconductor package `org.At.tair.db` provides comprehensive GO/KEGG mapping
+- **Validation**: Ortholog assignments based on BLAST/OrthoFinder (upstream analysis)
+
+This approach is widely accepted in plant omics studies for non-model species.
+
 ## Analyses Included
 
 ### Multi-panel Figure Components

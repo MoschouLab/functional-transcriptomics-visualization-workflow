@@ -36,13 +36,28 @@ dependencies:
   - r-rcolorbrewer
   - r-scales
   - r-pheatmap
+  - r-igraph
+  - r-ggraph
   
-  # Bioconductor core
-  - bioconductor-biocinstaller
-  
-  # Additional tools
+  # R utilities
   - r-openxlsx
   - r-here
+  - r-xml
+  - r-rcurl
+  - r-png
+  
+  # Bioconductor packages (installed via conda)
+  - bioconductor-clusterprofiler
+  - bioconductor-enrichplot
+  - bioconductor-org.at.tair.db
+  - bioconductor-dose
+  - bioconductor-complexheatmap
+  - bioconductor-deseq2
+  - bioconductor-annotationdbi
+  - bioconductor-go.db
+  - bioconductor-keggrest
+  - bioconductor-biostrings
+  - bioconductor-genomicranges
   
   # pip packages
   - pip:
