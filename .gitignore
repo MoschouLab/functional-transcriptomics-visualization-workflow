@@ -54,3 +54,10 @@ results/tables/*.tsv
 *.rds
 *.RData
 *.rda
+
+# Exception: allow example output figures
+!results/figures/panel_C_KEGG_diverging_barplot.pdf
+!results/figures/panel_D_volcano_plot.pdf
+!results/figures/panel_E_heatmap_top50.pdf
+!results/figures/panel_F_STRING_network.pdf
+!results/figures/panel_B_*.pdf
