@@ -1,7 +1,6 @@
 # Functional Transcriptomics Visualization Workflow
 
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) -->
-<!-- TODO: Update with actual Zenodo DOI after first release -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18469744.svg)](https://doi.org/10.5281/zenodo.18469744)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![R Version](https://img.shields.io/badge/R-4.3.0+-blue.svg)](https://www.r-project.org/)
@@ -240,18 +239,12 @@ If you use this workflow in your research, please cite:
   year = {2026},
   publisher = {GitHub},
   url = {https://github.com/MoschouLab/functional-transcriptomics-visualization-workflow},
-  doi = {10.5281/zenodo.XXXXXXX},
+  doi = {10.5281/zenodo.18469744},
   note = {Version 1.0.0}
 }
 ```
 
-> **Note**: The Zenodo DOI badge and citation will be updated after the first GitHub release is synchronized with Zenodo. To obtain a DOI:
-> 1. Create a GitHub release (v1.0.0)
-> 2. Zenodo will automatically create an archive and assign a DOI
-> 3. Update the badge at the top of this README
-> 4. Update the `doi` field in the citation
-
-**Related publication** (manuscript in preparation):
+**Related publication** (maunscript in preparation):
 
 ---
 
